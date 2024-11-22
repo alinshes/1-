@@ -1,0 +1,98 @@
+using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
+using System.Data.SqlClient;
+ 
+namespace WindowsFormsApp1
+{
+   public partial class Form1 : Form
+   {
+       public Form1()
+       {
+           InitializeComponent();
+       }
+ 
+       private void Form1_Load(object sender, EventArgs e)
+       {
+           LoadData();
+       }
+ 
+       private void LoadData()
+       {
+           string connectString = "Data Source=DESKTOP-OP1S0BT;Initial Catalog=romaandkirill;Integrated Security=true;";
+ 
+           using (SqlConnection myConnection = new SqlConnection(connectString))
+           {
+               try
+               {
+                   myConnection.Open();
+                   Console.WriteLine("Подключение к базе данных успешно!");
+ 
+                   string query = "SELECT * FROM Faculties3 ORDER BY fac_id";
+                   SqlCommand command = new SqlCommand(query, myConnection);
+                   SqlDataReader reader = command.ExecuteReader();
+                       
+                   List<string[]> data = new List<string[]>();
+ 
+                   while (reader.Read())
+                   {
+                       string[] row = new string[3];
+                       row[0] = reader["fac_id"].ToString();
+                       row[1] = reader["fac_name_full"].ToString();
+                       row[2] = reader["fac_name_abbr"].ToString();
+ 
+                       data.Add(row);
+                   }
+ 
+                   reader.Close();
+ 
+                   foreach (string[] s in data)
+                   {
+                       dataGridView1.Rows.Add(s);
+                   }
+               }
+               catch (SqlException ex)
+               {
+                   MessageBox.Show("Ошибка при подключении к базе данных: " + ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+               }
+               catch (Exception ex)
+               {
+                   MessageBox.Show("Произошла непредвиденная ошибка: " + ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+               }
+           }
+       }
+ 
+       private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+       {
+       }
+ 
+       private void button1_Click(object sender, EventArgs e)
+       {
+           string facNameFull = textBox1.Text;
+           string facNameAbbr = textBox2.Text;
+ 
+           string connectString = "Data Source=DESKTOP-OP1S0BT;Initial Catalog=romaandkirill;Integrated Security=true;";
+ 
+           using (SqlConnection myConnection = new SqlConnection(connectString))
+           {
+               myConnection.Open();
+ 
+               string query = "INSERT INTO Faculties3 (fac_name_full, fac_name_abbr) VALUES (@fullName, @abbr); SELECT SCOPE_IDENTITY();";
+ 
+               using (SqlCommand command = new SqlCommand(query, myConnection))
+               {
+                   command.Parameters.AddWithValue("@fullName", facNameFull);
+                   command.Parameters.AddWithValue("@abbr", facNameAbbr);
+ 
+                   int newId = Convert.ToInt32(command.ExecuteScalar());
+ 
+                   dataGridView1.Rows.Add(new object[] { newId, facNameFull, facNameAbbr });
+               }
+ 
+           }
+ 
+           textBox1.Clear();
+           textBox2.Clear();
+       }
+   }
+}
