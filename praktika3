@@ -1,0 +1,76 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Drawing.Text;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+ 
+namespace ррррррррррррррррр
+{
+   public partial class Form1 : Form
+   {
+       public Form1()
+       {
+           InitializeComponent();
+ 
+           LoadData();
+ 
+           listView1.MouseDown += ListView1_MouseClick;
+       }
+ 
+       private void Form1_Load(object sender, EventArgs e)
+       {
+ 
+       }
+ 
+       private void LoadData()
+       {
+           listView1.Items.Clear();
+ 
+           ImageList imageList = new ImageList();
+ 
+           imageList.ImageSize = new Size(30, 30);
+ 
+           imageList.Images.Add(new Bitmap("cat.png"));
+           imageList.Images.Add(new Bitmap("cat.png"));
+ 
+           Bitmap emptyImage = new Bitmap(30, 30);
+ 
+           using (Graphics graphics = Graphics.FromImage(emptyImage))
+           {
+               graphics.Clear(Color.White);
+           }
+           imageList.Images.Add(emptyImage);
+ 
+           listView1.SmallImageList = imageList;
+ 
+           string[] firstNames = { "Кот", "Мяу", "Кити" };
+           string[] lastNames = { "Котович", "Мяуч", "Кэт" };
+ 
+           for (int i = 0; i < firstNames.Length; i++)
+           {
+               ListViewItem listViewItem = new ListViewItem(new string[] { firstNames[i], lastNames[i] });
+ 
+               listViewItem.ImageIndex = i;
+ 
+               listView1.Items.Add(listViewItem);
+ 
+           }
+ 
+         
+       }  private void ListView1_MouseClick(object sender, MouseEventArgs e)
+           {
+               ListViewItem item = listView1.GetItemAt(e.X, e.Y);
+               if (item != null && MessageBox.Show("Вы уверены, что хотите удалить этот элемент?", "подтвержденме удаления", MessageBoxButtons.YesNo) == DialogResult.Yes) ;
+               {
+                   listView1.Items.Remove(item);
+               }
+           }
+   }
+}
+           
+       
