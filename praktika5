@@ -1,0 +1,10 @@
+using System; using System.Collections.Generic; using System.ComponentModel; using System.Data; using System.Drawing; using System.Linq; using System.Text; using System. Threading.Tasks; using System. Windows.Forms; using System.Net; namespace Ip
+{
+public partial elass Forml : Form
+public Form10
+InitializeComponent();
+string Host = Dns.GetHostName);
+string IP = Dns.GetHostByName(Host).AddressList[0].ToString0;
+textBox1.Text = Host;
+textBox2.Text = IP;
+private void Forml _Load object sender, EventArgs 
